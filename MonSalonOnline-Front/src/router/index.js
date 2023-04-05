@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Signup from '../views/Signup.vue'
 import Login from '../views/Login.vue'
 import Calendrier from '../views/Calendrier.vue'
+import myRdv from '../views/myRdv.vue'
+
 
 
 
@@ -41,6 +43,15 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/Calendrier.vue')
+    },
+
+    {
+      path: '/myrdv',
+      name: 'myrdv',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/myRdv.vue')
     }
   ]
 })

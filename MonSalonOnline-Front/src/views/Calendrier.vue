@@ -113,6 +113,8 @@ export default {
   },
   methods: {
 
+
+
     affichage() {
       this.taken.heure = []
       this.taken.client = []

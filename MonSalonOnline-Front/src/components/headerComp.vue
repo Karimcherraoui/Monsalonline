@@ -17,7 +17,7 @@
         
         <div class="flex gap-10  sm:flex sm:items-center">
                    <a href="/calendrier" class="text-gray-800 text-sm font-semibold hover:text-purple-600 mb-1">Calendrier</a>
-                   <a href="#" class="text-gray-800 text-sm font-semibold hover:text-purple-600 mb-1">My Appointment</a>
+                   <a href="/myrdv" class="text-gray-800 text-sm font-semibold hover:text-purple-600 mb-1">My Appointment</a>
 
         </div>
       </div>

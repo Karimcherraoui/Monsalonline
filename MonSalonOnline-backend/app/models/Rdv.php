@@ -16,7 +16,13 @@ class Rdv
      * @return void
      */
 
+public function getHoraire(){
 
+    $this->db->query("SELECT * FROM horaire ");
+    return $this->db->resultSet();
+
+
+}
     public function add($id_client, $jour, $heure, $date, $statut)
     {
         $this->db->query("INSERT INTO rdvs(id_client, jour, heure, date ,statut) VALUE(:id_client, :jour, :heure,:date,:statut)");
@@ -35,10 +41,13 @@ class Rdv
      * @param mixed $id
      * @return void
      */
-    public function deleteById($id)
+    public function deleteById($id,$heure,$date)
     {
-        $this->db->query("DELETE FROM rdvs WHERE id = :id");
+        $this->db->query("DELETE FROM rdvs WHERE id_client = :id and heure = :heure and date = :date");
         $this->db->bind(":id", $id);
+        $this->db->bind(":heure", $heure);
+        $this->db->bind(":date", $date);
+
         $this->db->execute();
     }
 

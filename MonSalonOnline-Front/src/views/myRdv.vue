@@ -1,43 +1,52 @@
 
 <template>
-  <div class="flex items-center justify-center h-screen" v-if="show">
-    <p class="font-black">NOTHING TO SHOW</p>
-  </div>
-  <div v-if="!show" class="mx-40 my-28	 overflow-x-auto">
-    <table class="min-w-full divide-y-2 divide-gray-200 text-sm">
-      <thead>
-        <tr>
-          <th class="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-            Day
-          </th>
-          <th class="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-            Date
-          </th>
-          <th class="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-            Situation
-          </th>
-          <th class="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-            Action
-          </th>
-        </tr>
-      </thead>
 
-      <tbody v-for="d in data" class="divide-y divide-gray-200">
-        <tr>
-          <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ d.jour }}</td>
-          <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ d.date }}</td>
-          <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ d.statut }}</td>
-          <td class="whitespace-nowrap px-4 py-2" v-on:click="cancel(d.id)">
-            <a class="inline-block rounded bg-red-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
-              Cancel
-            </a>
-          </td>
-        </tr>
-      </tbody>
+<headerComp></headerComp>
+<div class="bg-cover min-h-screen flex flex-col justify-center" style="background-image: url(https://imgs.search.brave.com/y9TPQ45kcUt6IYi-VxTfgVcww6ESSf5lNRYb9fWj4xU/rs:fit:1080:720:1/g:ce/aHR0cHM6Ly9pbWFn/ZXMudW5zcGxhc2gu/Y29tL3Bob3RvLTE1/MDM5NTE5MTQ4NzUt/NDUyMTYyYjBmM2Yx/P2l4bGliPXJiLTEu/Mi4xJnE9ODAmZm09/anBnJmNyb3A9ZW50/cm9weSZjcz10aW55/c3JnYiZ3PTEwODAm/Zml0PW1heCZpeGlk/PWV5SmhjSEJmYVdR/aU9qRXlNRGQ5)">
+  
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg flex justify-center my-10 ">
+    <table class="w-4/5 text-sm text-left text-gray-500 dark:text-gray-400 rounded-lg">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+               
+                <th scope="col" class="px-6 py-3">
+                    Heure
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Day
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Date
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Action
+                </th>
+            </tr>
+        </thead>
+        <tbody v-for="d in data" class="divide-y divide-gray-200" :key="d">
+            <tr class="bg-white border-b dark:bg-gray-900 dark:border-gray-700">
+              
+                <td class="px-6 py-4">
+                  {{ d.heure }}
+                </td>
+                <td class="px-6 py-4">
+                  {{ d.jour }}
+                </td>
+                <td class="px-6 py-4">
+                  {{ d.date }}
+                </td>
+                <td class="px-6 py-4">
+                    <a @click="remove(d)" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Remove</a>
+                </td>
+            </tr>
+          
+            
+        </tbody>
     </table>
-  </div>
+</div>
 
-  <foot></foot>
+</div>
+
 </template>
 <script>
 import axios from 'axios'
@@ -56,44 +65,37 @@ export default {
     this.read()
   },
   components: {
-    navbar,
-    foot
+
   },
   methods: {
     read() {
-      axios.post('http://localhost/wiSalonline/public/FromKeyToId', [localStorage.getItem('key')])
-        .then(response => {
-          this.id = response.data[0].id
-          axios.post('http://localhost/wiSalonline/public/api/RRappointments', [this.id])
+  
+          axios.post('http://localhost/MonSalonOnline-backend/api/all/'+localStorage.getItem('id'))
             .then(res => {
-              this.data = res.data
+              console.log(res.data.appointments);
+              this.data = res.data.appointments
               if (this.data.length === 0) {
                 this.show = true
               }
             })
-        })
+        
     },
-    cancel(par) {
-      axios.post('http://localhost/wiSalonline/public/api/Dappointments', [par])
-        .then(this.read())
+    remove(d) {
+      axios.post('http://localhost/MonSalonOnline-backend/api/delete/'+localStorage.getItem('id'), JSON.stringify({
+          'heure': d.heure,
+          'date': d.date
+
+      }), {
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
+        .then(()=>{
+          window.location.reload();
+        })
     }
   }
 }
 </script>
 <style scoped>
 </style>
-Footer
-© 2023 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-wiSalonline_front/myappointment.vue at master · marouaneaitelhaj/wiSalonline_front

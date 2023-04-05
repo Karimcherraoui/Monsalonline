@@ -128,6 +128,18 @@ class Api extends Controller
         }
     }
 
+    public function getHoraire()
+    {
+
+        $this->header->init("GET");
+        $result = $this->rdvModel->getHoraire();
+
+        echo json_encode([
+            "message" => "all Heure !",
+            "heure" => ($result),
+        ]);
+    }
+
     public function editRdv()
     {
         $this->header->init("PUT");
@@ -140,8 +152,9 @@ class Api extends Controller
 
     public function delete($id)
     {
-        $this->header->init("DELETE");
-        $this->rdvModel->deleteById($id);
+        $this->header->init("POST");
+        $data = json_decode(file_get_contents("php://input"));
+        $this->rdvModel->deleteById($id, $data->heure, $data->date);
         echo json_encode([
             "message" => "rendez-vous with id:$id was deleted!",
         ]);
@@ -149,7 +162,7 @@ class Api extends Controller
 
     public function all($id)
     {
-        $this->header->init("GET");
+        $this->header->init("post");
         $result = $this->rdvModel->all($id);
 
         echo json_encode([
