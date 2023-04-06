@@ -22,7 +22,7 @@
             <div>
               <input :min="today"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                v-model="month" type="date">
+                v-model="month" type="date" >
             </div>
           </div>
         </div>
@@ -78,6 +78,7 @@ export default {
       id: '',
       month: '',
       week: '',
+      allow: true,
     }
   },
   created(){
@@ -121,10 +122,13 @@ export default {
       console.log(localStorage.getItem("id"));
       axios.get('http://localhost/MonSalonOnline-backend/api/allRdv')
         .then(response => {
-          this.dataappointment = response.data.appointments
-          // console.log(response);
-
+          //console.log(response.data.appointments);
+          this.dataappointment = response.data.appointments.filter((appointement)=> appointement.date == this.month);
           for (let i = 0; i < this.dataappointment.length; i++) {
+            console.log("=>", this.dataappointment[i].date, this.month)
+            if(this.dataappointment[i].id_client == localStorage.getItem("id")){
+              this.allow = false;
+            }
             if (this.dataappointment[i].jour == this.day || this.dataappointment[i].date == this.day) {
               for (let j = 0; j < this.heure.length; j++) {
                 if (this.dataappointment[i].heure == this.heure[j] && this.dataappointment[i].date == this.month) {
@@ -134,6 +138,7 @@ export default {
               }
             }
           }
+          console.log(this.allow);
         })
     },
 
@@ -141,6 +146,10 @@ export default {
 
 
     now(heureselected) {
+      console.log()
+      if(this.allow == false)
+        return;
+      this.allow = false;
       if (this.taken.heure.includes(heureselected)) {
         return 
       } else {
@@ -161,35 +170,16 @@ export default {
             console.log(response)
             this.affichage()
             this.heureselected = ''
+            alert('votre rendez-vous est bien pris Merci !!')
             
           })
       }
     },
 
-    checkAppointment() {
-  // Vérifier si le client a déjà un rendez-vous
-  axios.get('http://localhost/MonSalonOnline-backend/api/all/'+localStorage.getItem('reference'))
-    .then((response) => {
 
-        console.log(response);
-      if (response.data.success) {
-        // Afficher un message d'erreur si le client a déjà un rendez-vous programmé
-        this.$toast.error('Vous avez déjà un rendez-vous programmé.');
-      } else {
-        // Permettre au client de prendre un rendez-vous
-        this.show = true;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-},
     
   },
- 
-  components: {
 
-  },
   watch: {
     day: function () {
       this.affichage()
@@ -204,6 +194,7 @@ export default {
       this.affichage()
     },
     month: function () {
+      this.allow = true;
       this.affichage()
       let input = new Date(this.month);
       let dayName = input.toLocaleString("default", { weekday: "long" });
@@ -214,13 +205,5 @@ export default {
 }
 </script>
 <style>
-.taken {
-  background-color: #ccc; /* Set desired background color */
-}
-.taken.bg-blue-200 {
-  background-color: #a0aec0; /* Set desired background color for taken heures by current client */
-}
-.taken.bg-red-200 {
-  background-color: #feb2b2; /* Set desired background color for taken heures by different client */
-}
+
 </style>
